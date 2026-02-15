@@ -4,6 +4,32 @@
 
 CLI for Things 3 by Cultured Code, implemented in Go.
 
+## Fork changes
+
+This fork includes the following security hardening and bug fixes on top of the
+upstream repo:
+
+- **File permissions (security):** Action log files are now created with `0600`
+  (owner-only) instead of `0644`, preventing other users from reading task
+  titles and auth tokens.
+- **CI shell injection (security):** GitHub Actions `workflow_dispatch` inputs
+  are passed via `env:` variables instead of direct `${{ }}` interpolation in
+  shell blocks, preventing command injection via crafted version strings.
+- **SQL LIKE escaping (security):** Search queries now escape `%` and `_`
+  wildcards so they match literally instead of acting as LIKE metacharacters.
+- **Auth token redaction (security):** `--dry-run` and `--debug` output now
+  masks auth token values with `***` to prevent accidental credential leakage.
+- **URL encoding fix (security):** The `use-clipboard` parameter is now
+  properly percent-encoded in Things URLs.
+- **AppleScript injection (security):** Newline characters in user input are
+  escaped before interpolation into AppleScript strings.
+- **GitHub Actions pinning (security):** All CI actions are pinned to SHA
+  hashes instead of mutable tags, and workflow permissions are scoped to
+  least privilege.
+- **Windows SQLite path fix (bug):** `sqliteDSN` now produces valid `file:`
+  URLs on Windows by converting backslashes and handling drive letters,
+  fixing "out of memory" errors in all database operations.
+
 This project ships a single Go binary with unit and integration tests.
 
 ## Status
