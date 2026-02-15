@@ -100,7 +100,11 @@ func OpenDefaultWritable(override string) (*Store, string, error) {
 }
 
 func sqliteDSN(path string, mode string) string {
-	u := url.URL{Scheme: "file", Path: path}
+	p := filepath.ToSlash(path)
+	if len(p) > 0 && p[0] != '/' {
+		p = "/" + p
+	}
+	u := url.URL{Scheme: "file", Path: p}
 	q := u.Query()
 	if mode == "" {
 		mode = "ro"
